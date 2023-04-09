@@ -10,9 +10,36 @@ def random(size):
             equations[e].append(r.randint(-5, 5))
         equations[e].append(r.randint(-5, 5))
     
-    return equations, 0
+    return equations
 
-# Solve user's system
+# Solve system
+def solve(matrice):
+    print("\nSolving...\n")
+
+    pivot = 0 # Which pivot is being used
+    newMatrice = matrice
+    for index in range(0, len(matrice)):
+        #print(f"\n{pivot} - Pivot")
+        for increment in range(0, len(matrice)-index): # Switch positions if pivot 0
+            if newMatrice[index][pivot] != 0: break
+            newMatrice[index], newMatrice[index+increment] = newMatrice[index+increment], newMatrice[index]
+        #print(newMatrice)
+        for i in range(len(newMatrice[index])-1, -1, -1): # For each element of the row (pivot turns 1)
+            # Pivot == 0
+            if newMatrice[index][pivot] == 0: break # If all of the pivot's columns are 0, skips it
+            newMatrice[index][i] = newMatrice[index][i]/newMatrice[index][pivot]
+        #print(newMatrice)
+        for row in range(0, len(matrice)): # Pivot's column turns into 0 (except the pivot)
+            if not row == index:
+                change = newMatrice[row][pivot]
+                for e in range(0, len(newMatrice[row])):
+                    newMatrice[row][e] -= newMatrice[index][e]*change
+        #print(newMatrice)
+        pivot += 1 
+        
+    
+    return newMatrice
+
 
 # Interface with the user
 print("\n\nWelcome to Gauss-Jordan python project!\n\nIf you need help, type 'h'\n\n")
@@ -26,6 +53,10 @@ while True:
     if userInput == "0": 
         print("\nClosing...\n")
         break
+
+    if userInput == "test":
+        #print(f"\n{solve([[5,5,0,15],[2,4,1,10],[3,4,0,11]])}\n") 
+        print(f"\n{solve([[1,2,0,0,3],[0,0,1,0,0],[0,0,0,1,-4]])}\n")   
 
     if userInput == "random":
         print("\nEntering the random mode, please type the size of the system.\n")
@@ -43,7 +74,7 @@ while True:
             except:
                 print("Please type a valid number.\n")
         
-        system, answer = random(size)
+        system = random(size)
 
         print("\n")
         alpha = list(string.ascii_lowercase) # Alphabet
@@ -61,6 +92,11 @@ while True:
             if a == "N": 
                 break
             elif a == "Y":
-                print(f"{answer}\n")
+                for e in solve(system): # For equation
+                    text = ""
+                    for i in range(0, len(e)-1): # For variable (except the last one)
+                        text += f"{'' if e[i]<0 else '+'}{e[i]}{alpha[i]} "
+                    text += f"= {'' if e[-1]<0 else '+'}{e[-1]}"
+                    print(f"{text}")
                 break
 

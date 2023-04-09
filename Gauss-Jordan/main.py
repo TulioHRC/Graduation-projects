@@ -1,6 +1,16 @@
+import random as r
+import string
+
 # Random exercise, and also an answer generation
 def random(size):
-    print(size)
+    equations = []
+    for e in range(0, size[1]): # For each equation
+        equations.append([])
+        for var in range(0, size[0]): # For each variable inside an equation
+            equations[e].append(r.randint(-5, 5))
+        equations[e].append(r.randint(-5, 5))
+    
+    return equations, 0
 
 # Solve user's system
 
@@ -34,4 +44,23 @@ while True:
                 print("Please type a valid number.\n")
         
         system, answer = random(size)
+
+        print("\n")
+        alpha = list(string.ascii_lowercase) # Alphabet
+        for e in system: # For equation
+            text = ""
+            for i in range(0, len(e)-1): # For variable (except the last one)
+                text += f"{'' if e[i]<0 else '+'}{e[i]}{alpha[i]} "
+            text += f"= {'' if e[-1]<0 else '+'}{e[-1]}"
+            print(f"{text}")
+        
+        print("\n")
+        
+        while True:
+            a = input("Do you want to see the answer? [Y/N] -> ").upper()
+            if a == "N": 
+                break
+            elif a == "Y":
+                print(f"{answer}\n")
+                break
 
